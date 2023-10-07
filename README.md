@@ -7,7 +7,7 @@ with needed hex positions and then using any hex editor go to this position and 
 
 (Not all version will be supported becouse it's hard to edit game binarys via IDA pro. The currently supported platforms and Architectures: MCBE Windows UWP x64). 
 
-=
+
 Todo list: 
 MCBE Windows UWP x86;
 
