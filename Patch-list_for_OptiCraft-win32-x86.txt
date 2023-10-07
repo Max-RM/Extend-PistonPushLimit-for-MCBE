@@ -1,0 +1,10 @@
+# Many thanks to @riesters / @Riesters for his help. He really helped a lot. Without him, I would never have done it.
+# 
+# Here you can see hex positions to modify OptiCraft.
+# If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
+--------------------------------------
+1.14.31 win32 x86
+=
+111B57C:  0C >> FF
+111BB48:  0C >> FF
+--------------------------------------
