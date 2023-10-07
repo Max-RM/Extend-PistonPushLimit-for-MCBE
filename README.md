@@ -1,7 +1,7 @@
 Many thanks to  @riester / @Riesters  for his help. He really helped a lot. Without him, I would never have done it.
-
+---------------------------------------------------------------------------------------
 Demonstration that this works: https://youtu.be/i1Z29zio3tM
-
+---------------------------------------------------------------------------------------
 You can repeat process by edit exe of the game via any hex editor without IDA pro. Just open this list with needed hex positions and then using any hex editor go to this position and change (OC) to (FF).
 
 (not all version will be supported becouse it's hard to edit game binarys via IDA pro).
