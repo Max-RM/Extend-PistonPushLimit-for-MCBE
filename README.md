@@ -6,6 +6,8 @@ You can repeat process by edit exe of the game via any hex editor without IDA pr
 with needed hex positions and then using any hex editor go to this position and change (OC) to (FF).
 
 (Not all version will be supported becouse it's hard to edit game binarys via IDA pro. The currently supported platforms and Architectures: MCBE Windows UWP x64). 
+
+=
 Todo list: 
 MCBE Windows UWP x86;
 
