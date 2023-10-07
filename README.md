@@ -1,5 +1,5 @@
 Many thanks to  @riesters  for his help. He really helped a lot. Without him, I would never have done it.
----------------------------------------------------------------------------------------
+
 Demonstration that this works: https://youtu.be/i1Z29zio3tM
 ---------------------------------------------------------------------------------------
 You can repeat process by edit exe of the game via any hex editor without IDA pro. Just open this list: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/blob/main/Patch-list_for_MCBE-UWP-x64.txt
