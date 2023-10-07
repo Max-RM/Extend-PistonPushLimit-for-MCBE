@@ -10,7 +10,7 @@ Todo list:
 MCBE Windows UWP x86;
 
 MCBE Windows UWP ARM (There is only ARM32 MCBE for Windows ARM64, but unfortunately there is no ARM64 MCBE for Windows ARM64);
-#
+=
 MCBE Windows win32 x86 McChinaDev (McChinaDev (MCBE development versions by Netease that even support Windows 7) that distributed by MDLC organization);
 
 MCEE Windows win32 x86 MCEE/Opticraft (This is Minecraft Education Edition, Opticraft is modified MCEE, they both works on Windows 7 too);
@@ -18,7 +18,7 @@ MCEE Windows win32 x86 MCEE/Opticraft (This is Minecraft Education Edition, Opti
 MCBE windows win32 x86/x64 (Some strange x86/x64 Chinese versions by Netease (non-dev versions) and chinese MCEE x64);
 
 MCBE Windows win32 x64 BDS (Bedrock Dedicated Server to host MCBE worlds);
-#
+=
 MCBE Android ARM32v7;
 
 MCBE Android ARm64v8;
@@ -26,7 +26,7 @@ MCBE Android ARm64v8;
 MCBE Android x86 (for Android x86, this is OS that can be installed on almost any PC and for ChromeOS (not recommended, Android x86 better));
 
 MCBE Android x86_x64 (for Android x86, this is OS that can be installed on almost any PC and for ChromeOS (not recommended, Android x86 better));
-#
+=
 Todo list?(not sure that will support them):
 
 MCBE IOS ARM;
