@@ -1,4 +1,4 @@
-Many thanks to  @riesters  for his help. He really helped a lot. Without him, I would never have done it.
+Many thanks to  [@riesters](https://github.com/riesters)  for his help. He really helped a lot. Without him, I would never have done it.
 
 Demonstration that this works: https://youtu.be/i1Z29zio3tM
 ---------------------------------------------------------------------------------------
