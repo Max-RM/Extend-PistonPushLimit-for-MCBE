@@ -3,10 +3,15 @@
 # Here you can see hex positions to modify MCBE.
 # If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
 --------------------------------------
+1.14.30.02
+=
+15E1377:  0C >> FF
+15E1845:  0C >> FF
+--------------------------------------
 1.16.10.02 UWP x64
 =
-16C73D7:  0C  FF
-16C78A5:  0C  FF
+16C73D7:  0C >> FF
+16C78A5:  0C >> FF
 --------------------------------------
 1.16.20.03 UWP x64
 =
