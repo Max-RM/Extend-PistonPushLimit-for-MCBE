@@ -4,8 +4,28 @@
 # that distributed by MDLC organization).
 # If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
 --------------------------------------
+1.14.32 win32 x86
+=
+27A8FEA:  0C >> FF
+27A927E:  0C >> FF
+--------------------------------------
 1.16.10.2 win32 x86
 =
 2A8E12E:  0C >> FF
 2A8E3C0:  0C >> FF
+--------------------------------------
+1.16.12.2 win32 x86
+=
+2A9ACDE:  0C >> FF
+2A9AF70:  0C >> FF
+--------------------------------------
+1.16.201.2
+=
+372FEB1:  0C >> FF
+3730B0E:  0C >> FF
+--------------------------------------
+1.16.202.2
+=
+3759D01:  0C >> FF
+375A95E:  0C >> FF
 --------------------------------------
