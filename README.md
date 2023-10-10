@@ -5,7 +5,7 @@ Demonstration that this works: https://youtu.be/i1Z29zio3tM
 You can repeat process by edit exe of the game via any hex editor without IDA pro. Just open this list: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/blob/main/Patch-list_for_MCBE-UWP-x64.txt
 with needed hex positions and then using any hex editor go to this position and change (OC) to (FF).
 
-(Not all version will be supported becouse it's hard to edit game binarys via IDA pro. The currently supported platforms and Architectures: MCBE Windows UWP x64). 
+(Not all version will be supported becouse it's hard to edit game binarys via IDA pro). 
 
 
 Todo list: 
