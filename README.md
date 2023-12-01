@@ -1,4 +1,4 @@
-![EPPL_Logo_1280](https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/assets/81485476/93cf9ad3-474c-49b1-9408-7636ca2d19b6)
+![EPPL_Logo_1280640](https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/assets/81485476/e2597b12-4249-4da4-9971-d03dba668e33)
 Extend Piston Push Limit
 ---------------------------------------------------------------------------------------
 Many thanks to  [@riesters](https://github.com/riesters)  for his help. He really helped a lot. Without him, I would never have done it.
