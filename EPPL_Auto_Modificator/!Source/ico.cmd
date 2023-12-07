@@ -1,0 +1,1 @@
+python png2ico.py EPPL_16.png EPPL_32.png EPPL_48.png EPPL_64.png EPPL_128.png EPPL_255.png
