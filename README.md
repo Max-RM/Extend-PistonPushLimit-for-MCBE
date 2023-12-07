@@ -47,3 +47,6 @@ MCBE-trial Android ARM32v7/ARM64v8/x86/x86_x64 (Not deserve be modded becouse us
 If you have any problems with this or you want to ask for support other versions that not in the list (Only MBE UWP x64/x86 is supported now) then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
 ---------------------------------------------------------------------------------------
 Later I will make manual how to modify the game via IDA pro (if there is no hex positions for your version of the game you will use this method via IDA pro).
+
+---------------------------------------------------------------------------------------
+The project belongs to TNT ENTERTAINMENT inc and was founded on 07.10.2023
