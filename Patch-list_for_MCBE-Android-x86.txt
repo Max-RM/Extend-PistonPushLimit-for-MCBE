@@ -1,6 +1,6 @@
 # Many thanks to @riesters / @Riesters for his help. He really helped a lot. Without him, I would never have done it.
 # 
-# Here you can see hex positions to modify MCBE for Android ARM64.
+# Here you can see hex positions to modify MCBE for Android x86.
 # If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
 --------------------------------------
 0.15.0.1 Android x86
