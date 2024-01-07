@@ -16,7 +16,7 @@ STABLE:
 
 ########
 UNSTABLE:
-0x4210819 >> 35	>> FF
+0x4210819 >> 35 >> FF
 0x421081A >> 00 >> 3F
 0x421081B >> F1 >> B1
 0x421081C >> E0 >> E9
@@ -38,10 +38,10 @@ UNSTABLE:
 1.20.51.01 Android ARM64
 
 ########
-AF9195D:	31	FD
-AF9195E:	00	3F
-AF9195F:	F1	B1
-AF92BAD:	35	FD
-AF92BAE:	00	3F
-AF92BAF:	F1	B1
+0xAF9195D >> 31 >> FD
+0xAF9195E >> 00 >> 3F
+0xAF9195F >> F1 >> B1
+0xAF92BAD >> 35 >> FD
+0xAF92BAE >> 00 >> 3F
+0xAF92BAF >> F1 >> B1
 --------------------------------------
