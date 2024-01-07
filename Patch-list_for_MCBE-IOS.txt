@@ -7,6 +7,25 @@
 #
 #NOTE. IOS versions have strange behavior. Therefore, 2 variants will be posted for some versions. 1 - STABLE - will make the limit equal to 4096 blocks (Which is probably not enough). 2 - UNSTABLE - will make the limit equal to 9344 blocks, but if this limit is exceeded, the game will crash (I do not know why this number is not a multiple of 2). Attempts to make the limit larger have not been successful yet.
 --------------------------------------
+0.15.0.1 IOS
+########
+0x14F225D >> 35 >> FF
+0x14F225E >> 00 >> 3F
+0x14F225F >> F1 >> B1
+0x14F3399 >> 35 >> FF
+0x14F339A >> 00 >> 3F
+0x14F339B >> F1 >> B1
+--------------------------------------
+1.1.5 IOS
+
+########
+0x20DE0C1 >> 35 >> FF
+0x20DE0C2 >> 00 >> 3F
+0x20DE0C3 >> F1 >> B1
+0x20DEDE5 >> 35 >> FF
+0x20DEDE6 >> 00 >> 3F
+0x20DEDE7 >> F1 >> B1
+--------------------------------------
 1.16.40.02 IOS
 
 UNSTABLE:
