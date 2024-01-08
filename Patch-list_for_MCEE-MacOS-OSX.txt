@@ -1,0 +1,18 @@
+# Many thanks to @riesters / @Riesters for his help. He really helped a lot. Without him, I would never have done it.
+# 
+# Here you can see hex positions to modify MCEE for MacOS (OSX).
+# If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
+#
+#Experemental support for MacOS (OSX)!
+#
+--------------------------------------
+1.14.70.0 MacOS (OSX)
+=
+0x292AF78 >> 0D >> FF
+0x292C7F3 >> 0D >> FF
+--------------------------------------
+1.20.10.0 MacOS (OSX)
+=
+0x5E31330 >> 0C >> FF
+0x5E325CE >> 0D >> FF
+--------------------------------------
