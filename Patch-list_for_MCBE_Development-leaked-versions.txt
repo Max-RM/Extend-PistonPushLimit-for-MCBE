@@ -1,0 +1,53 @@
+# Many thanks to @riesters / @Riesters for his help. He really helped a lot. Without him, I would never have done it.
+# 
+# Here you can see hex positions to modify MCBE.
+# If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
+--------------------------------------
+1.6.0 MCBE Android ARM32
+=
+
+--------------------------------------
+1.16.0.54 MCBE Windows UWP x64
+=
+0x201CD8C >> 0C >> FF
+0x201CEF4 >> 0C >> FF
+--------------------------------------
+1.16.210.5 MCBE Windows UWP x64
+=
+
+--------------------------------------
+1.16.100.60 MCBE Windows UWP x64
+=
+0x278D105 >> 0C >> FF
+0x278DFC3 >> 0C >> FF
+--------------------------------------
+1.17.11.1
+=
+
+--------------------------------------
+1.17.30.23 MCBE Windows UWP x64
+=
+0x465C424 >> 0C >> FF
+0x465CC49 >> 0C >> FF
+--------------------------------------
+1.18.30.04 MCBE Windows UWP x64
+=
+0x58A5FDF >> 0C >> FF
+0x58A6815 >> 0C >> FF
+--------------------------------------
+1.19.60.22 MCBE Windows UWP x64
+=
+
+--------------------------------------
+1.19.499.0 MCBE Windows UWP x64
+=
+
+--------------------------------------
+1.19.80.21 MCBE Windows UWP x64
+=
+
+--------------------------------------
+1.20.0.22
+=
+
+--------------------------------------
