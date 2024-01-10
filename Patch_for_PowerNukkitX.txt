@@ -1,0 +1,7 @@
+You need open BlockPistonBase.java file in Source Code. Path: "PowerNukkitX\src\main\java\cn\nukkit\block\BlockPistonBase.java"
+
+Then search "private static int MOVE_BLOCK_LIMIT = 12;" or "MOVE_BLOCK_LIMIT = 12"
+
+And change "12" to something else, for example 2147483647
+
+After this just compile sources to .jar file.
