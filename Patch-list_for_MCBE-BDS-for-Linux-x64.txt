@@ -1,0 +1,10 @@
+# Many thanks to @riesters / @Riesters for his help. He really helped a lot. Without him, I would never have done it.
+# 
+# Here you can see hex positions to modify BDS.
+# If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
+--------------------------------------
+1.17.40.06 x64
+=
+0x2C92CE1 >> 0C >> FF
+0x2C946F3 >> 0D >> FF
+--------------------------------------
