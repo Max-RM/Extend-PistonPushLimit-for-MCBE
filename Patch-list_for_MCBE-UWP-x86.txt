@@ -2,17 +2,9 @@
 # 
 # Here you can see hex positions to modify MCBE.
 # If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
-#
-#Experemental support for Wimdows ARM. PistonPushLimit for MCBE UWP ARM32 (could be or not) is 254 blocks.
-#
 --------------------------------------
-1.2.8
+1.16.10.02
 =
-0x87A886 >> 0C >> FF
-0x87ABA8 >> 0C >> FF
---------------------------------------
-1.16.40 UWP x64
-=
-0xE57ABC >> 0C >> FF
-0xE57E1A >> 0C >> FF
+0x1400E36 >> 0C >> FF
+0x14012DC >> 0C >> FF
 --------------------------------------
