@@ -6,12 +6,22 @@
 #Experemental support for Wimdows ARM. PistonPushLimit for MCBE UWP ARM32 (could be or not) is 254 blocks.
 #
 --------------------------------------
-1.2.8
+1.2.8 UWP ARM32v7
 =
 0x87A886 >> 0C >> FF
 0x87ABA8 >> 0C >> FF
 --------------------------------------
-1.16.40 UWP x64
+1.1.5 UWP ARM32v7
+=
+0x721E02 >> 0C >> FF
+0x7220EE >> 0C >> FF
+--------------------------------------
+1.6.1 UWP ARM32v7
+=
+94E78E >> 0C >> FF
+94EAEC >> 0C >> FF
+--------------------------------------
+1.16.40 UWP ARM32v7
 =
 0xE57ABC >> 0C >> FF
 0xE57E1A >> 0C >> FF
