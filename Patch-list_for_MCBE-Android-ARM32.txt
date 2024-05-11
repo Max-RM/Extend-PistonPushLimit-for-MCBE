@@ -3,7 +3,7 @@
 # Here you can see hex positions to modify MCBE for Android ARM64.
 # If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
 #
-#NOTE. Android versions have strange behavior in ARM32. Therefore, piston push limit equal to 254 blocks. Attempts to make the limit larger have not been successful yet.
+#NOTE. Android versions have strange behavior in ARM32. Therefore, piston push limit equal to 254 blocks. Attempts to make the limit larger have not been successful yet. (11.05.2024 I think I found a way to fix it and bypass 254 piston push limit).
 --------------------------------------
 0.15.0.1 Android ARM32
 =
@@ -17,11 +17,21 @@
 --------------------------------------
 1.2.8.0 Android ARM32
 =
-0x1AE2790 >> 0D >> FF
-0x1AE3340 >> 0D >> FF
+0x1AE2790 >> 0D >> 01
+0x1AE2791 >> 29 >> 20
+0x1AE3340 >> 0D >> 01
+0x1AE3341 >> 28 >> 20
+--------------------------------------
+1.14.60.05 Android ARM32
+0x25879D4 >> 0D >> 01
+0x25879D5 >> 29 >> 20
+0x2588DBC >> 0D >> 01
+0x2588DBD >> 28 >> 20
 --------------------------------------
 1.16.40.02 Android ARM32
 =
-0x29FDA22 >> 0D >> FF
-0x29FE9BC >> 0D >> FF
+0x29FDA22 >> 0D >> 01
+0x29FDA23 >> 29 >> 20
+0x29FE9BC >>  >> 01
+0x29FE9BD >> 29 >> 20
 --------------------------------------
