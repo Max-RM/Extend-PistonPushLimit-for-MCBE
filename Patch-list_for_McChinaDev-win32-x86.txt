@@ -1,9 +1,46 @@
 # Many thanks to @riesters / @Riesters for his help. He really helped a lot. Without him, I would never have done it.
 # 
 # Here you can see hex positions to modify McChinaDev (McChinaDev (MCBE development versions by Netease that even support Windows 7) 
-# NOTE! Before change hex values you must use this tool: https://github.com/ergrelet/unlicense to remove themida/winlicense from the game exe.
-# that distributed by MDLC organization).
+# NOTE! Before change hex values you must use this tool for versions 1.14.32 and above: https://github.com/ergrelet/unlicense 
+And this tool: https://github.com/Hendi48/Magicmida for versions [1.9.1.15 - 1.14.31] and versions above 1.18.36 (2.11.0.609460) (because unlicense is outdated now)
+to remove themida/winlicense from the game exe.
+# (McChinaDev (MCBE development versions by Netease that even support Windows 7) distributed by MDLC organization).
 # If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
+--------------------------------------
+1.9.1.15 win32 x86 (1.13.0.64067)
+=
+0x16BE4D8 >> 0C >> FF
+0x16BE719 >> 0C >> FF
+--------------------------------------
+1.11.4.2 win32 x86 (1.14.0.73026)
+=
+0xD297F0 >> 0C >> FF
+0xD29D2A >> 0C >> FF
+--------------------------------------
+1.12.0.28.1 win32 x86 (1.15.3.84105)
+=
+0x172B158 >> 0C >> FF
+0x172B279 >> 0C >> FF
+--------------------------------------
+1.13.3 win32 x86 (1.17.0.87815)
+=
+0x1E21E4A >> 0C >> FF
+0x1E21FA0 >> 0C >> FF
+--------------------------------------
+1.13.4 win32 x86 (1.21.0.96687)
+=
+0x1E2B45A >> 0C >> FF
+0x1E2B58E >> 0C >> FF
+--------------------------------------
+1.14.30 win32 x86 (1.19.0.103004)
+=
+0x278875A >> 0C >> FF
+0x27889EE >> 0C >> FF
+--------------------------------------
+1.14.31 win32 x86 (1.19.0.106942)
+=
+0x27892EA >> 0C >> FF
+0x278957E >> 0C >> FF
 --------------------------------------
 1.14.32 win32 x86 (1.20.0.115315)
 =
