@@ -1,0 +1,12 @@
+# Many thanks to @riesters / @Riesters for his help. He really helped a lot. Without him, I would never have done it.
+# 
+# Here you can see hex positions to modify McChinaDev (McChinaDev (MCBE development versions by Netease) 
+# NOTE! Before change hex values you must use this tool for versions 1.14.32 and above: https://github.com/ergrelet/unlicense
+# (McChinaDev (MCBE development versions by Netease) distributed by MDLC organization).
+# If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
+--------------------------------------
+1.20.11.0 win64 x64 (3.0.0.772623)
+=
+0xAA69194 >> 0C >> FF
+0xAA69D1F >> 0C >> FF
+--------------------------------------
