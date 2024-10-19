@@ -1,3 +1,3 @@
-You can use this project for personal use. It is forbidden to port this project to other launchers that can modify Minecraft without my permission.
+You can use this project for personal purposes. It is forbidden to port this project to other launchers that can modify Minecraft, without my permission.
 
 The license can be updated at any time without notifying users.
