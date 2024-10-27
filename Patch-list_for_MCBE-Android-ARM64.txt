@@ -5,7 +5,6 @@
 #
 #NOTE. Android versions have strange behavior. Therefore, 2 variants will be posted for some versions. 1 - STABLE - will make the limit equal to 4096 blocks (Which is probably not enough). 2 - UNSTABLE - will make the limit equal to 9344 blocks, but if this limit is exceeded, the game will crash (I do not know why this number is not a multiple of 2). Attempts to make the limit larger have not been successful yet.
 --------------------------------------
-
 1.16.20.03 Android ARM64
 
 ########
@@ -20,7 +19,6 @@ UNSTABLE:
 0x42130D8 >> E0 >> E9
 
 --------------------------------------
-
 1.16.40.02 Android ARM64
 
 ########
