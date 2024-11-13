@@ -3,6 +3,21 @@
 # Here you can see hex positions to modify BDS.
 # If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
 --------------------------------------
+1.6.0.15 Linux BDS x64
+=
+0x1AC77DB >> D8 >> FF
+0x1AC77DC >> 00 >> FF
+0x1AC77DD >> 00 >> FF
+0x1AC77DE >> 00 >> FF
+0x1AC782C >> D8 >> FF
+0x1AC782D >> 00 >> FF
+0x1AC782E >> 00 >> FF
+0x1AC782F >> 00 >> FF
+0x1AC9114 >> D8 >> FF
+0x1AC9115 >> 00 >> FF
+0x1AC9116 >> 00 >> FF
+0x1AC9117 >> 00 >> FF
+--------------------------------------
 1.16.40.02 Linux BDS x64
 =
 0xCB3B7FE >> E0 >> FF
@@ -13,7 +28,6 @@
 0xCB3B850 >> 00 >> FF
 0xCB3B851 >> 00 >> FF
 0xCB3B852 >> 00 >> FF
-0xCB3B89E >> 0E >> E0
 0xCB3D983 >> E0 >> FF
 0xCB3D984 >> 00 >> FF
 0xCB3D985 >> 00 >> FF
