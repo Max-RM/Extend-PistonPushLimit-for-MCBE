@@ -3,32 +3,37 @@
 # Here you can see hex positions to modify BDS.
 # If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
 --------------------------------------
-1.16.40 win32 x64
+1.6.0.15 BDS Win64
+=
+0x4DB595 >> 0C >> FF
+0x4DBB44 >> 0C >> FF
+--------------------------------------
+1.16.40.02 BDS Win64
 =
 0x8C2517 >> 0C >> FF
 0x8C29E5 >> 0C >> FF
 --------------------------------------
-1.20.81.01 win32 x64
+1.20.81.01 BDS Win64
 =
 0x21385BB >> 0C >> FF
 0x2138DF7 >> 0C >> FF
 --------------------------------------
-1.21.10.22 win32 x64 (Preview)
+1.21.10.22 BDS Win64 (Preview)
 =
 0x27DB462 >> 0C >> FF
 0x27DBCFB >> 0C >> FF
 --------------------------------------
-1.21.2.02 win32 x64
+1.21.2.02 BDS Win64
 =
 0x22A82AB >> 0C >> FF
 0x22A8AE7 >> 0C >> FF
 --------------------------------------
-1.21.20.03 win32 x64
+1.21.20.03 BDS Win64
 =
 0x234D4DB >> 0C >> FF
 0x234DCC7 >> 0C >> FF
 --------------------------------------
-1.21.22.01 win32 x64
+1.21.22.01 BDS Win64
 =
 0x234D51B >> 0C >> FF
 0x234DD07 >> 0C >> FF
