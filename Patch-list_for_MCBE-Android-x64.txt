@@ -3,6 +3,11 @@
 # Here you can see hex positions to modify MCBE for Android x64.
 # If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
 --------------------------------------
+1.16.20.03 Android x64
+=
+0x3400FD5 >> 0D >> FF
+0x34025CD >> 0D >> FF
+--------------------------------------
 1.16.40.02 Android x64
 =
 0x33FF945 >> 0D >> FF
