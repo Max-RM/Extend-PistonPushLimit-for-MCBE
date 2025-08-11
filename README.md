@@ -11,8 +11,8 @@ with needed hex positions and then using any hex editor go to this position and 
 (Not all version will be supported becouse it's hard to edit game binarys via IDA pro). 
 
 
-Todo list: 
-MCBE Windows UWP x86;
+~~Todo list:~~
+Now all platforms is supported.
 
 MCBE Windows UWP ARM (There is only ARM32 MCBE for Windows ARM64, but unfortunately there is no ARM64 MCBE for Windows ARM64);
 
@@ -44,7 +44,7 @@ MCEE Android ARM32v7/ARM64v8/x86/x86_x64 (Not deserve be modded becouse useless)
 
 MCBE-trial Android ARM32v7/ARM64v8/x86/x86_x64 (Not deserve be modded becouse useless);
 ---------------------------------------------------------------------------------------
-If you have any problems with this or you want to ask for support other versions that not in the list (Only MBE UWP x64/x86 is supported now) then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
+If you have any problems with this or you want to ask for support other versions that not in the list, then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
 ---------------------------------------------------------------------------------------
 Later I will make manual how to modify the game via IDA pro (if there is no hex positions for your version of the game you will use this method via IDA pro).
 
