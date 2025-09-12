@@ -1,0 +1,14 @@
+{
+	"x86": {
+		"patternA": "B8 AB AA AA 2A",
+		"range": "0-28",
+		"patternB": "83 F? XX",
+		"xxOptions": { "0C": true, "0D": true, "FF": false }
+	},
+	"x64": {
+		"patternA": "48 B8 AB AA AA AA AA AA AA 2A",
+		"range": "0-28",
+		"patternB": "4? 83 F? XX",
+		"xxOptions": { "0C": true, "0D": true, "FF": false }
+	}
+} 
