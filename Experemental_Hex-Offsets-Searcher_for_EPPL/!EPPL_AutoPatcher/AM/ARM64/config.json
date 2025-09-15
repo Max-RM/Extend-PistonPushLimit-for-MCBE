@@ -1,0 +1,13 @@
+{
+    "path": "EXEName",
+    "switches": [
+        {
+            "title": "Patch to EPPL Mod \n(remove piston push limit)",
+            "patches": [
+                "0xFirstHexOffset >> XX >> FF",
+                "0xSecondHexOffset >> XX >> FF"
+            ]
+        }
+    ]
+}
+Preparation. There is no MCBE UWP ARM64 yet.

@@ -1,4 +1,5 @@
 {
+	"writeHexOffsetsToWorkDir": "ask",
 	"x86": {
 		"patternA": "B8 AB AA AA 2A",
 		"range": "0-28",
@@ -9,6 +10,18 @@
 		"patternA": "48 B? AB AA AA AA AA AA AA ?A",
 		"range": "0-28",
 		"patternB": "4? 83 F? XX",
+		"xxOptions": { "0C": true, "0D": true, "FF": false }
+	},
+	"arm32": {
+		"patternA": "4B 81 FB 03 32 53 10",
+		"range": "0-0",
+		"patternB": "03 EB D3 73 XX 2B",
+		"xxOptions": { "0C": true, "0D": true, "FF": false }
+	},
+	"arm64": {
+		"patternA": "",
+		"range": "0-0",
+		"patternB": "",
 		"xxOptions": { "0C": true, "0D": true, "FF": false }
 	}
 } 

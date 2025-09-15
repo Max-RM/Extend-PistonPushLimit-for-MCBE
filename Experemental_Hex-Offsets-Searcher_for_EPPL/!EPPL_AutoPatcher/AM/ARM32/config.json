@@ -1,0 +1,14 @@
+{
+    "path": "EXEName",
+    "switches": [
+        {
+            "title": "Patch to EPPL Mod \n(remove piston push limit)",
+            "patches": [
+                "0xFirstHexOffset >> XX >> 01",
+                "0xFirstHexOffset+1 >> ?? >> 20",
+                "0xSecondHexOffset >> XX >> 01"
+                "0xSecondHexOffset+1 >> ?? >> 20"
+            ]
+        }
+    ]
+}
