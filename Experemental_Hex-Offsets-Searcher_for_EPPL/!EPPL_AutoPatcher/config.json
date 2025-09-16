@@ -13,7 +13,7 @@
 		"xxOptions": { "0C": true, "0D": true, "FF": false }
 	},
 	"arm32": {
-		"patternA": "4B 81 FB 03 32 53 10",
+		"patternA": "81 FB 0? 32 53 10",
 		"range": "0-0",
 		"patternB": "03 EB D3 73 XX 2B",
 		"xxOptions": { "0C": true, "0D": true, "FF": false }
