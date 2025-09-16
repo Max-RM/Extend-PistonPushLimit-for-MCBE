@@ -259,7 +259,7 @@ def write_am_config(dest_dir: Path, exe_name: str, arch: str, first_tuple, secon
 		"path": exe_name,
 		"switches": [
 			{
-				"title": "Patch to EPPL Mod \n(remove piston push limit)",
+				"title": "Patch to EPPL Mod (remove piston push limit)",
 				"patches": patches,
 			}
 		]

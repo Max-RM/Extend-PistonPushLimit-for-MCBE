@@ -2,9 +2,9 @@
     "path": "EXEName",
     "switches": [
         {
-            "title": "Enable/Disable the EPPL Mod",
+            "title": "Patch to EPPL Mod (remove piston push limit)",
             "patches": [
-                "0xFirstJexOffset >> XX >> FF",
+                "0xFirstHexOffset >> XX >> FF",
                 "0xSecondHexOffset >> XX >> FF"
             ]
         }

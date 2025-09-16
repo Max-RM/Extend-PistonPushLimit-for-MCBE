@@ -2,7 +2,7 @@
     "path": "EXEName",
     "switches": [
         {
-            "title": "Patch to EPPL Mod \n(remove piston push limit)",
+            "title": "Patch to EPPL Mod (remove piston push limit)",
             "patches": [
                 "0xFirstHexOffset >> XX >> FF",
                 "0xSecondHexOffset >> XX >> FF"
