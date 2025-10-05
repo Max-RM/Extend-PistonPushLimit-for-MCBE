@@ -1,4 +1,7 @@
 {
+    "enableAll": true,
+    "enableRAM": true,
+    "RAMWarningDisabled": true,
     "path": "EXEName",
     "switches": [
         {

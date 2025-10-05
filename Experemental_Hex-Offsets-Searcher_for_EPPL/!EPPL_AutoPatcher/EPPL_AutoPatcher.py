@@ -33,26 +33,53 @@ def ask(prompt: str, valid: set):
 def read_top_config(cfg_path: Path):
 	cfg = json.loads(cfg_path.read_text(encoding='utf-8'))
 	# normalize tri-states
-	for k in ("writeHexOffsetsToWorkDir", "RAMPatchMode"):
+	for k in ("writeHexOffsetsToWorkDir", "ramPatchMode", "RAMPatchMode"):
 		v = cfg.get(k, False)
 		if not (isinstance(v, bool) or v == 'ask'):
 			raise ValueError(f"'{k}' must be boolean or 'ask'")
 		cfg[k] = v
-	kw = cfg.get("RAMProcessKeywords", [])
-	cfg["RAMProcessKeywords"] = [str(s) for s in kw] if isinstance(kw, list) else []
-	# validate arch sections
-	for arch in ("x86", "x64", "arm32", "arm64"):
-		if arch in cfg:
-			sect = cfg[arch]
-			for key in ("patternA", "range", "patternB", "xxOptions"):
-				if key not in sect:
-					raise ValueError(f"Missing '{key}' in {arch}")
-			m = re.findall(r"\d+", str(sect['range']))
-			if not m:
-				raise ValueError(f"Range has no numbers in {arch}")
-			# xxOptions may include 0120 for arm32
-			if not isinstance(sect['xxOptions'], dict):
-				raise ValueError(f"xxOptions must be dict in {arch}")
+	kw = cfg.get("ramProcessKeywords", cfg.get("RAMProcessKeywords", []))
+	cfg["ramProcessKeywords"] = [str(s) for s in kw] if isinstance(kw, list) else []
+	# Support platform groups: windows, android, apple
+	platforms = {}
+	# First check if platforms key exists
+	if "platforms" in cfg and isinstance(cfg["platforms"], dict):
+		platforms = cfg["platforms"]
+	else:
+		# Back-compat: if flat arch keys exist, treat as windows
+		flat_arch_present = any(k in cfg for k in ("x86","x64","arm32","arm64"))
+		if flat_arch_present:
+			platforms.setdefault("windows", {})
+			for arch in ("x86","x64","arm32","arm64"):
+				if arch in cfg:
+					platforms["windows"][arch] = cfg[arch]
+	# Validate present platform arch sections and normalize pattern arrays
+	for plat, pdata in platforms.items():
+		for arch in ("x86","x64","arm32","arm64"):
+			if arch in pdata:
+				sect = pdata[arch]
+				# Convert single pattern to array for backward compatibility
+				if "patternA" in sect and isinstance(sect["patternA"], str):
+					# Single pattern - wrap in array
+					pattern_set = {
+						"patternA": sect["patternA"],
+						"range": sect["range"],
+						"patternB": sect["patternB"],
+						"xxOptions": sect["xxOptions"]
+					}
+					sect["patterns"] = [pattern_set]
+				elif "patterns" in sect and isinstance(sect["patterns"], list):
+					# Already array format - validate each
+					for i, p in enumerate(sect["patterns"]):
+						for key in ("patternA","range","patternB","xxOptions"):
+							if key not in p:
+								raise ValueError(f"Missing '{key}' in {plat}/{arch}/patterns[{i}]")
+						m = re.findall(r"\d+", str(p['range']))
+						if not m:
+							raise ValueError(f"Range has no numbers in {plat}/{arch}/patterns[{i}]")
+				else:
+					raise ValueError(f"Missing patternA or patterns in {plat}/{arch}")
+	cfg["platforms"] = platforms
 	return cfg
 
 # ---------- Pattern parsing ----------
@@ -96,30 +123,96 @@ def match_at(buf: bytes, pos: int, pattern):
 	return True
 
 # ---------- File arch ----------
-def detect_pe_arch(exe_path: Path) -> str:
-	with exe_path.open('rb') as f:
-		data = f.read(0x1000)
-	if len(data) < 0x40:
-		raise ValueError("File too small to be a valid PE")
-	if data[:2] != b'MZ':
-		raise ValueError("Not an MZ executable")
-	e_lfanew = int.from_bytes(data[0x3C:0x40], 'little')
-	with exe_path.open('rb') as f:
-		f.seek(e_lfanew)
-		sig = f.read(4)
-		if sig != b'PE\x00\x00':
-			raise ValueError("Invalid PE signature")
-		machine = int.from_bytes(f.read(2), 'little')
-	if machine == 0x014C:
-		return 'x86'
-	elif machine == 0x8664:
-		return 'x64'
-	elif machine in (0x01C0, 0x01C4):
-		return 'arm32'
-	elif machine == 0xAA64:
-		return 'arm64'
+PE_MAGIC = b'MZ'
+ELF_MAGIC = b'\x7fELF'
+FAT_MAGIC = 0xCAFEBABE
+FAT_CIGAM = 0xBEBAFECA
+MH_MAGIC = 0xFEEDFACE
+MH_CIGAM = 0xCEFAEDFE
+MH_MAGIC_64 = 0xFEEDFACF
+MH_CIGAM_64 = 0xCFFAEDFE
+
+
+def detect_file_type_and_arch(path: Path):
+	"""Returns (platform, details)
+	platform: 'windows'|'android'|'apple'
+	details for platform:
+	- windows: ('pe', 'x86'|'x64'|'arm32'|'arm64')
+	- android: ('elf', 'x86'|'x64'|'arm32'|'arm64')
+	- apple: ('macho', [ (arch, offset, size) ... ])
+	"""
+	data = path.read_bytes()[:0x1000]
+	if data.startswith(PE_MAGIC):
+		# PE
+		full = path.read_bytes()[:0x1000]
+		if len(full) < 0x40:
+			raise ValueError("File too small to be a valid PE")
+		e_lfanew = int.from_bytes(full[0x3C:0x40], 'little')
+		with path.open('rb') as f:
+			f.seek(e_lfanew)
+			sig = f.read(4)
+			if sig != b'PE\x00\x00':
+				raise ValueError("Invalid PE signature")
+			machine = int.from_bytes(f.read(2), 'little')
+		if machine == 0x014C:
+			arch = 'x86'
+		elif machine == 0x8664:
+			arch = 'x64'
+		elif machine in (0x01C0, 0x01C4):
+			arch = 'arm32'
+		elif machine == 0xAA64:
+			arch = 'arm64'
+		else:
+			raise ValueError(f"Unsupported PE machine: 0x{machine:04X}")
+		return 'windows', ('pe', arch)
+	elif data.startswith(ELF_MAGIC):
+		# ELF -> assume Android .so
+		with path.open('rb') as f:
+			f.seek(18)
+			e_machine = int.from_bytes(f.read(2), 'little')
+		if e_machine == 3:
+			arch = 'x86'
+		elif e_machine == 62:
+			arch = 'x64'
+		elif e_machine == 40:
+			arch = 'arm32'
+		elif e_machine == 183:
+			arch = 'arm64'
+		else:
+			raise ValueError(f"Unsupported ELF machine: {e_machine}")
+		return 'android', ('elf', arch)
 	else:
-		raise ValueError(f"Unsupported PE machine: 0x{machine:04X}")
+		# Maybe Mach-O or Fat
+		with path.open('rb') as f:
+			magic = int.from_bytes(f.read(4), 'big')
+		if magic in (FAT_MAGIC, FAT_CIGAM):
+			# Fat binary
+			be = (magic == FAT_MAGIC)
+			with path.open('rb') as f:
+				nfat = int.from_bytes(f.read(4), 'big' if be else 'little')
+				slices = []
+				for _ in range(nfat):
+					cputype = int.from_bytes(f.read(4), 'big' if be else 'little')
+					cpusub = f.read(4)
+					off = int.from_bytes(f.read(4), 'big' if be else 'little')
+					size = int.from_bytes(f.read(4), 'big' if be else 'little')
+					align = f.read(4)
+					arch = 'x86' if cputype == 7 else ('x64' if cputype == 0x1000007 else ('arm32' if cputype == 12 else ('arm64' if cputype == 0x100000C else None)))
+					if arch:
+						slices.append((arch, off, size))
+			return 'apple', ('macho', slices)
+		elif magic in (MH_MAGIC, MH_CIGAM, MH_MAGIC_64, MH_CIGAM_64):
+			# Thin Mach-O
+			with path.open('rb') as f:
+				f.seek(0)
+				magic = int.from_bytes(f.read(4), 'big')
+				cputype = int.from_bytes(f.read(4), 'little')  # Mach-O fields vary; simple mapping
+				arch = 'x86' if cputype == 7 else ('x64' if cputype == 0x1000007 else ('arm32' if cputype == 12 else ('arm64' if cputype == 0x100000C else None)))
+				size = path.stat().st_size
+				slices = [(arch or 'unknown', 0, size)]
+			return 'apple', ('macho', slices)
+		else:
+			raise ValueError("Unsupported file format")
 
 # ---------- Search core ----------
 def search_in_bytes(buf: bytes, patternA: str, range_str: str, patternB: str, xx_opts: dict, arch: str):
@@ -193,6 +286,30 @@ def search_in_bytes(buf: bytes, patternA: str, range_str: str, patternB: str, xx
 			dedup[off] = (off, xx, nxt)
 	return sorted(dedup.values(), key=lambda x: x[0]), n
 
+
+def search_with_fallback(buf: bytes, patterns: list, arch: str):
+	"""Search using pattern fallback chain. Returns (results, size, pattern_index) or (None, size, -1) if all failed."""
+	n = len(buf)
+	for i, pattern_set in enumerate(patterns):
+		try:
+			results, _ = search_in_bytes(buf, pattern_set['patternA'], str(pattern_set['range']), pattern_set['patternB'], pattern_set['xxOptions'], arch)
+			if results:
+				print(f"Pattern {i+1} found {len(results)} matches:")
+				for j, (off, xx, _nxt) in enumerate(results, 1):
+					print(f"  {j}. XX at {format_hex_off(off)} (matched {xx})")
+				if len(results) == 2:
+					print(f"Pattern {i+1} succeeded with exactly 2 matches.")
+					return results, n, i
+				else:
+					print(f"Pattern {i+1} found {len(results)} matches (need exactly 2), trying next pattern...")
+			else:
+				print(f"Pattern {i+1} found no matches, trying next pattern...")
+		except Exception as e:
+			print(f"Pattern {i+1} failed: {e}")
+			continue
+	print("All patterns failed or found wrong number of matches.")
+	return None, n, -1
+
 # ---------- File helpers ----------
 def pick_file_interactive() -> Path:
 	while True:
@@ -208,7 +325,7 @@ def pick_file_interactive() -> Path:
 				print("File picker is not available.\n")
 				continue
 			root = tk.Tk(); root.withdraw()
-			p = filedialog.askopenfilename(title="Select EXE file", filetypes=[("Executable files", "*.exe"), ("All files", "*.*")])
+			p = filedialog.askopenfilename(title="Select binary file", filetypes=[("Binaries", "*.exe;*.so;*"), ("All files", "*.*")])
 			root.destroy()
 			if p:
 				pp = Path(p)
@@ -374,7 +491,7 @@ def find_candidate_processes(keywords):
 def ram_mode(cfg):
 	while True:
 		print("Experemental EPPl auto patcher for MCBE UWP created by MaxRM.")
-		cands = find_candidate_processes(cfg.get('RAMProcessKeywords', []))
+		cands = find_candidate_processes(cfg.get('ramProcessKeywords', []))
 		if not cands:
 			print("No processes matched keywords. Returning to main menu.\n")
 			return
@@ -399,14 +516,19 @@ def ram_mode(cfg):
 			exe = None
 		if exe and exe.exists():
 			try:
-				arch = detect_pe_arch(exe)
+				platform, details = detect_file_type_and_arch(exe)
+				if platform != 'windows':
+					arch = 'x64'
+				else:
+					_, arch = details
 			except Exception:
 				arch = 'x64'
 		else:
 			arch = 'x64'
-		if arch not in cfg:
+		platforms = cfg.get('platforms', {})
+		if 'windows' not in platforms or arch not in platforms['windows']:
 			print(f"No config for arch {arch}. Returning to main menu.\n"); return
-		sect = cfg[arch]
+		sect = platforms['windows'][arch]
 		# Read memory of main module
 		try:
 			mods = enumerate_modules(pid)
@@ -416,19 +538,20 @@ def ram_mode(cfg):
 			buf = read_process_memory(pid, base, size)
 		except Exception as e:
 			print("Failed to read process memory:", e); continue
-		results, _ = search_in_bytes(buf, sect['patternA'], str(sect['range']), sect['patternB'], sect['xxOptions'], arch)
-		if not results:
-			print("No matches found in RAM. Returning to process list.\n"); continue
+		results, _, pattern_idx = search_with_fallback(buf, sect['patterns'], arch)
+		if results is None:
+			print("No matches found in RAM with any pattern. Returning to process list.\n"); continue
 		# Display with RVA (no 0x)
 		print(f"Found {len(results)} XX offsets in RAM:")
 		proc_name = Path(mpath).name if mpath else (name if name else 'process')
+		proc_label = proc_name[:-4] if proc_name.lower().endswith('.exe') else proc_name
 		for i, (off, xx, _nxt) in enumerate(results, 1):
-			print(f"{i}. XX at {proc_name}+{off:08X} (matched {xx})")
+			print(f"{i}. XX at {proc_label}+{off:08X} (matched {xx})")
 		for off, _xx, _nxt in results:
-			print(f"{proc_name}+{off:08X}")
+			print(f"{proc_label}+{off:08X}")
 		# Build RVA lines
 		from datetime import datetime
-		rva_lines = [f"{proc_name}+{off:08X}" for off, _xx, _nxt in results]
+		rva_lines = [f"{proc_label}+{off:08X}" for off, _xx, _nxt in results]
 		rva_lines.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 		# Menu
 		while True:
@@ -509,96 +632,198 @@ def file_mode(cfg):
 		p = pick_file_interactive()
 		if p is None:
 			return
+		# Detect file type and arch/platform
 		try:
-			arch = detect_pe_arch(p)
-			print(f"Detected PE architecture: {arch}")
+			platform, details = detect_file_type_and_arch(p)
+			if platform == 'windows':
+				_kind, arch = details
+				print(f"Detected file platform: {platform} ({arch})")
+			elif platform == 'android':
+				_kind, arch = details
+				print(f"Detected file platform: {platform} ({arch})")
+			elif platform == 'apple':
+				_kind, slices = details
+				archs = [arch for arch, _, _ in slices]
+				print(f"Detected file platform: {platform} ({', '.join(archs)})")
+			else:
+				print(f"Detected file platform: {platform}")
 		except Exception as e:
-			print("Failed to detect PE architecture:", e)
-			print("Choose:\n  1) Select another file\n  3) Back to main menu\n  4) Exit program")
-			c = ask("Enter 1/3/4: ", {'1','3','4'})
-			if c == '1':
-				continue
-			elif c == '3':
-				return
-			else:
-				raise SystemExit(0)
-		if arch not in cfg:
-			print(f"No config section for architecture '{arch}'.")
-			print("Choose:\n  1) Select another file\n  3) Back to main menu\n  4) Exit program")
-			c = ask("Enter 1/3/4: ", {'1','3','4'})
-			if c == '1':
-				continue
-			elif c == '3':
-				return
-			else:
-				raise SystemExit(0)
-		sect = cfg[arch]
-		# search
-		buf = p.read_bytes()
-		results, size = search_in_bytes(buf, sect['patternA'], str(sect['range']), sect['patternB'], sect['xxOptions'], arch)
-		print(f"File: {p}  Size: {size} bytes")
-		print(f"patternA={len(parse_hex_pattern(sect['patternA'])[0])} bytes  patternB={len(parse_hex_pattern(sect['patternB'])[0])} bytes  range={sect['range']}")
-		if not results:
-			print("No matches found.")
-			print("Choose:\n  1) Select another file\n  2) Exit\n  3) Back to main menu")
+			print("Failed to detect file type:", e)
+			print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit program")
 			c = ask("Enter 1-3: ", {'1','2','3'})
 			if c == '1':
 				continue
-			elif c == '3':
+			elif c == '2':
 				return
 			else:
 				raise SystemExit(0)
-		print(f"Found {len(results)} XX offsets:")
-		for i, (off, xx, _nxt) in enumerate(results, 1):
-			print(f"{i}. XX at {format_hex_off(off)} (matched {xx})")
-		for off, _xx, _nxt in results:
-			print(f"{format_hex_off(off)}")
-		# write HexOffsets
-		from datetime import datetime
-		lines = [format_hex_off(off) for off, _xx, _nxt in results]
-		lines.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-		(project_root / 'HexOffsets.txt').write_text("\n".join(lines) + "\n", encoding='utf-8')
-		flag = cfg.get('writeHexOffsetsToWorkDir', False)
-		write_work = (flag is True) or (flag=='ask' and ask("Also write HexOffsets.txt next to the EXE? [y/N]: ", {'y','n'})=='y')
-		if write_work:
-			(p.parent / 'HexOffsets.txt').write_text("\n".join(lines) + "\n", encoding='utf-8')
-		# validate count
-		if len(results) != 2:
-			if len(results) == 1:
-				print("Error: exactly two results required, got 1.")
-			else:
-				print(f"Error: too many results ({len(results)}). Exactly two required.")
-			print("Choose:\n  1) Select another file\n  2) Exit\n  3) Back to main menu")
+		platforms = cfg.get('platforms', {})
+		# Windows PE single-arch
+		if platform == 'windows':
+			_kind, arch = details
+			if 'windows' not in platforms or arch not in platforms['windows']:
+				print(f"No config section for windows/{arch}.")
+				print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit program")
+				c = ask("Enter 1-3: ", {'1','2','3'})
+				if c == '1':
+					continue
+				elif c == '2':
+					return
+				else:
+					raise SystemExit(0)
+			sect = platforms['windows'][arch]
+			buf = p.read_bytes()
+			results, size, pattern_idx = search_with_fallback(buf, sect['patterns'], arch)
+			if results is None:
+				print("No matches found with any pattern.")
+				print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit")
+				c = ask("Enter 1-3: ", {'1','2','3'})
+				if c == '1':
+					continue
+				elif c == '2':
+					return
+				else:
+					raise SystemExit(0)
+			print(f"File: {p}  Size: {size} bytes")
+			print(f"Found matches using pattern {pattern_idx + 1}")
+			print(f"Found {len(results)} XX offsets:")
+			for i, (off, xx, _nxt) in enumerate(results, 1):
+				print(f"{i}. XX at {format_hex_off(off)} (matched {xx})")
+			for off, _xx, _nxt in results:
+				print(f"{format_hex_off(off)}")
+			# write HexOffsets
+			from datetime import datetime
+			lines = [format_hex_off(off) for off, _xx, _nxt in results]
+			lines.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+			(project_root / 'HexOffsets.txt').write_text("\n".join(lines) + "\n", encoding='utf-8')
+			flag = cfg.get('writeHexOffsetsToWorkDir', False)
+			write_work = (flag is True) or (flag=='ask' and ask("Also write HexOffsets.txt next to the EXE? [y/N]: ", {'y','n'})=='y')
+			if write_work:
+				(p.parent / 'HexOffsets.txt').write_text("\n".join(lines) + "\n", encoding='utf-8')
+			# validate count
+			if len(results) != 2:
+				if len(results) == 1:
+					print("Error: exactly two results required, got 1.")
+				else:
+					print(f"Error: too many results ({len(results)}). Exactly two required.")
+				print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit")
+				c = ask("Enter 1-3: ", {'1','2','3'})
+				if c == '1':
+					continue
+				elif c == '2':
+					return
+				else:
+					raise SystemExit(0)
+			# copy AM
+			resp = input("Copy AM assets and update AM config next to the EXE? [y/N]: ").strip().lower()
+			if resp not in ('y','yes'):
+				print("Copy skipped.")
+				print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit")
+				c = ask("Enter 1-3: ", {'1','2','3'})
+				if c == '1':
+					continue
+				elif c == '2':
+					return
+				else:
+					raise SystemExit(0)
+			copy_am_assets(project_root, arch, p.parent)
+			write_am_config(p.parent, p.name, arch, results[0], results[1])
+			print("AutoModificator assets copied and config.json updated successfully.")
+			print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit program")
 			c = ask("Enter 1-3: ", {'1','2','3'})
 			if c == '1':
 				continue
-			elif c == '3':
+			elif c == '2':
 				return
 			else:
 				raise SystemExit(0)
-		# copy AM
-		resp = input("Copy AM assets and update AM config next to the EXE? [y/N]: ").strip().lower()
-		if resp not in ('y','yes'):
-			print("Copy skipped.")
-			print("Choose:\n  1) Select another file\n  2) Exit\n  3) Back to main menu")
+		# Android ELF thin
+		elif platform == 'android':
+			_kind, arch = details
+			if 'android' not in platforms or arch not in platforms['android']:
+				print(f"No config section for android/{arch}.")
+				print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit program")
+				c = ask("Enter 1-3: ", {'1','2','3'})
+				if c == '1':
+					continue
+				elif c == '2':
+					return
+				else:
+					raise SystemExit(0)
+			sect = platforms['android'][arch]
+			buf = p.read_bytes()
+			results, size = search_in_bytes(buf, sect['patternA'], str(sect['range']), sect['patternB'], sect['xxOptions'], arch)
+			print(f"File: {p}  Size: {size} bytes")
+			print(f"patternA={len(parse_hex_pattern(sect['patternA'])[0])} bytes  patternB={len(parse_hex_pattern(sect['patternB'])[0])} bytes  range={sect['range']}")
+			if not results:
+				print("No matches found.")
+				print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit")
+				c = ask("Enter 1-3: ", {'1','2','3'})
+				if c == '1':
+					continue
+				elif c == '2':
+					return
+				else:
+					raise SystemExit(0)
+			print(f"Found {len(results)} XX offsets (android/{arch}):")
+			for i, (off, xx, _nxt) in enumerate(results, 1):
+				print(f"{i}. [{arch}] XX at {format_hex_off(off)} (matched {xx})")
+			for off, _xx, _nxt in results:
+				print(f"[{arch}] {format_hex_off(off)}")
+			# write HexOffsets with arch tags
+			from datetime import datetime
+			lines = [f"[{arch}] {format_hex_off(off)}" for off, _xx, _nxt in results]
+			lines.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+			(project_root / 'HexOffsets.txt').write_text("\n".join(lines) + "\n", encoding='utf-8')
+			print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit program")
 			c = ask("Enter 1-3: ", {'1','2','3'})
 			if c == '1':
 				continue
-			elif c == '3':
+			elif c == '2':
 				return
 			else:
 				raise SystemExit(0)
-		copy_am_assets(project_root, arch, p.parent)
-		write_am_config(p.parent, p.name, arch, results[0], results[1])
-		print("AutoModificator assets copied and config.json updated successfully.")
-		print("Choose:\n  1) Select another file\n  2) Exit\n  3) Back to main menu")
-		c = ask("Enter 1-3: ", {'1','2','3'})
-		if c == '1':
-			continue
-		elif c == '3':
-			return
-		else:
-			raise SystemExit(0)
+		# Apple Mach-O (possibly fat)
+		elif platform == 'apple':
+			_kind, slices = details
+			plat_cfg = platforms.get('apple', {})
+			buf_all = p.read_bytes()
+			all_results = []
+			for arch, off, size in slices:
+				if arch not in plat_cfg:
+					continue
+				sect = plat_cfg[arch]
+				chunk = buf_all[off:off+size]
+				results, _ = search_in_bytes(chunk, sect['patternA'], str(sect['range']), sect['patternB'], sect['xxOptions'], arch)
+				for r in results:
+					all_results.append((arch, r[0], r[1], r[2]))
+			if not all_results:
+				print("No matches found.")
+				print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit program")
+				c = ask("Enter 1-3: ", {'1','2','3'})
+				if c == '1':
+					continue
+				elif c == '2':
+					return
+				else:
+					raise SystemExit(0)
+			print(f"Found {len(all_results)} XX offsets (apple slices):")
+			for i, (arch, off, xx, _nxt) in enumerate(all_results, 1):
+				print(f"{i}. [{arch}] XX at {format_hex_off(off)} (matched {xx})")
+			for arch, off, _xx, _nxt in all_results:
+				print(f"[{arch}] {format_hex_off(off)}")
+			from datetime import datetime
+			lines = [f"[{arch}] {format_hex_off(off)}" for arch, off, _xx, _nxt in all_results]
+			lines.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+			(project_root / 'HexOffsets.txt').write_text("\n".join(lines) + "\n", encoding='utf-8')
+			print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit program")
+			c = ask("Enter 1-3: ", {'1','2','3'})
+			if c == '1':
+				continue
+			elif c == '2':
+				return
+			else:
+				raise SystemExit(0)
 
 # ---------- Main menu ----------
 def main():
@@ -615,7 +840,7 @@ def main():
 		print("  1) Standard file patch (AutoModificator)")
 		print("  2) RAM patch mode")
 		print("  3) Exit program")
-		c = input("Enter 1 or 2: ").strip()
+		c = input("Enter 1-3: ").strip()
 		if c == '1':
 			file_mode(cfg)
 		elif c == '2':
@@ -624,8 +849,6 @@ def main():
 			return
 		else:
 			print("Invalid choice.\n")
-		
-		#Experemental EPPl auto patcher for MCBE UWP created by MaxRM.
-		
+
 if __name__ == '__main__':
 	main() 
