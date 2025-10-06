@@ -752,9 +752,7 @@ def file_mode(cfg):
 					raise SystemExit(0)
 			sect = platforms['android'][arch]
 			buf = p.read_bytes()
-			results, size = search_in_bytes(buf, sect['patternA'], str(sect['range']), sect['patternB'], sect['xxOptions'], arch)
-			print(f"File: {p}  Size: {size} bytes")
-			print(f"patternA={len(parse_hex_pattern(sect['patternA'])[0])} bytes  patternB={len(parse_hex_pattern(sect['patternB'])[0])} bytes  range={sect['range']}")
+			results, size, pattern_idx = search_with_fallback(buf, sect['patterns'], arch)
 			if not results:
 				print("No matches found.")
 				print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit")
@@ -765,16 +763,24 @@ def file_mode(cfg):
 					return
 				else:
 					raise SystemExit(0)
+			print(f"File: {p}  Size: {size} bytes")
+			print(f"Found matches using pattern {pattern_idx + 1}")
 			print(f"Found {len(results)} XX offsets (android/{arch}):")
 			for i, (off, xx, _nxt) in enumerate(results, 1):
 				print(f"{i}. [{arch}] XX at {format_hex_off(off)} (matched {xx})")
+			# Raw offsets (without arch prefix)
 			for off, _xx, _nxt in results:
-				print(f"[{arch}] {format_hex_off(off)}")
-			# write HexOffsets with arch tags
+				print(f"{format_hex_off(off)}")
+			# write HexOffsets without arch tags
 			from datetime import datetime
-			lines = [f"[{arch}] {format_hex_off(off)}" for off, _xx, _nxt in results]
+			lines = [f"{format_hex_off(off)}" for off, _xx, _nxt in results]
 			lines.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 			(project_root / 'HexOffsets.txt').write_text("\n".join(lines) + "\n", encoding='utf-8')
+			# Optionally also write next to selected file
+			flag = cfg.get('writeHexOffsetsToWorkDir', False)
+			write_work = (flag is True) or (flag=='ask' and ask("Also write HexOffsets.txt next to the file? [y/N]: ", {'y','n'})=='y')
+			if write_work:
+				(p.parent / 'HexOffsets.txt').write_text("\n".join(lines) + "\n", encoding='utf-8')
 			print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit program")
 			c = ask("Enter 1-3: ", {'1','2','3'})
 			if c == '1':
@@ -794,8 +800,8 @@ def file_mode(cfg):
 					continue
 				sect = plat_cfg[arch]
 				chunk = buf_all[off:off+size]
-				results, _ = search_in_bytes(chunk, sect['patternA'], str(sect['range']), sect['patternB'], sect['xxOptions'], arch)
-				for r in results:
+				results, _, _pidx = search_with_fallback(chunk, sect['patterns'], arch)
+				for r in results or []:
 					all_results.append((arch, r[0], r[1], r[2]))
 			if not all_results:
 				print("No matches found.")
@@ -810,12 +816,18 @@ def file_mode(cfg):
 			print(f"Found {len(all_results)} XX offsets (apple slices):")
 			for i, (arch, off, xx, _nxt) in enumerate(all_results, 1):
 				print(f"{i}. [{arch}] XX at {format_hex_off(off)} (matched {xx})")
-			for arch, off, _xx, _nxt in all_results:
-				print(f"[{arch}] {format_hex_off(off)}")
+			# Raw offsets (without arch prefix)
+			for _arch, off, _xx, _nxt in all_results:
+				print(f"{format_hex_off(off)}")
 			from datetime import datetime
-			lines = [f"[{arch}] {format_hex_off(off)}" for arch, off, _xx, _nxt in all_results]
+			lines = [f"{format_hex_off(off)}" for _arch, off, _xx, _nxt in all_results]
 			lines.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 			(project_root / 'HexOffsets.txt').write_text("\n".join(lines) + "\n", encoding='utf-8')
+			# Optionally also write next to selected file
+			flag = cfg.get('writeHexOffsetsToWorkDir', False)
+			write_work = (flag is True) or (flag=='ask' and ask("Also write HexOffsets.txt next to the file? [y/N]: ", {'y','n'})=='y')
+			if write_work:
+				(p.parent / 'HexOffsets.txt').write_text("\n".join(lines) + "\n", encoding='utf-8')
 			print("Choose:\n  1) Select another file\n  2) Back to main menu\n  3) Exit program")
 			c = ask("Enter 1-3: ", {'1','2','3'})
 			if c == '1':

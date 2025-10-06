@@ -87,9 +87,9 @@
 			"x86": {
 				"patterns": [
 					{
-						"patternA": "",
-						"range": "0-0",
-						"patternB": "",
+						"patternA": "AB AA AA AA",
+						"range": "0 - 24",
+						"patternB": "83 F? XX",
 						"xxOptions": { "0C": true, "0D": true, "FF": true }
 					}
 				]
@@ -97,9 +97,9 @@
 			"x64": {
 				"patterns": [
 					{
-						"patternA": "",
-						"range": "0-0",
-						"patternB": "",
+						"patternA": "48 B? AB AA AA AA",
+						"range": "0-25",
+						"patternB": "4? 83 F? XX",
 						"xxOptions": { "0C": true, "0D": true, "FF": true }
 					}
 				]
@@ -107,9 +107,9 @@
 			"arm32": {
 				"patterns": [
 					{
-						"patternA": "",
-						"range": "0-0",
-						"patternB": "",
+						"patternA": "4A F6 AB 2? CA F6 AA 2?",
+						"range": "0 - 20",
+						"patternB": "XX 2?",
 						"xxOptions": { "0C": true, "0D": true, "FF": true, "0120": false }
 					}
 				]
@@ -117,9 +117,9 @@
 			"arm64": {
 				"patterns": [
 					{
-						"patternA": "",
-						"range": "0-0",
-						"patternB": "",
+						"patternA": "E? F3 01 B2",
+						"range": "4 - 12",
+						"patternB": "?F 3? 00 F1",
 						"xxOptions": { "0C": true, "0D": true, "FF": true }
 					}
 				]
@@ -140,10 +140,10 @@
 			"x64": {
 				"patterns": [
 					{
-						"patternA": "",
-						"range": "0-0",
-						"patternB": "",
-						"xxOptions": { "0C": true, "0D": true, "FF": true }
+						"patternA": "48 B9 AB AA AA AA AA AA AA AA",
+						"range": "0-25",
+						"patternB": "48 83 F? XX",
+						"xxOptions": { "0C": true, "0D": true, "FF": false }
 					}
 				]
 			},
