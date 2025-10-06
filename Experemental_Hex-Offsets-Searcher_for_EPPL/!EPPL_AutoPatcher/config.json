@@ -82,17 +82,91 @@
 				]
 			}
 		},
+
 		"android": {
-			"x86": { "patterns": [{ "patternA": "", "range": "0-0", "patternB": "", "xxOptions": { "0C": true, "0D": true, "FF": true } }] },
-			"x64": { "patterns": [{ "patternA": "", "range": "0-0", "patternB": "", "xxOptions": { "0C": true, "0D": true, "FF": true } }] },
-			"arm32": { "patterns": [{ "patternA": "", "range": "0-0", "patternB": "", "xxOptions": { "0C": true, "0D": true, "FF": true, "0120": false } }] },
-			"arm64": { "patterns": [{ "patternA": "", "range": "0-0", "patternB": "", "xxOptions": { "0C": true, "0D": true, "FF": true } }] }
+			"x86": {
+				"patterns": [
+					{
+						"patternA": "",
+						"range": "0-0",
+						"patternB": "",
+						"xxOptions": { "0C": true, "0D": true, "FF": true }
+					}
+				]
+			},
+			"x64": {
+				"patterns": [
+					{
+						"patternA": "",
+						"range": "0-0",
+						"patternB": "",
+						"xxOptions": { "0C": true, "0D": true, "FF": true }
+					}
+				]
+			},
+			"arm32": {
+				"patterns": [
+					{
+						"patternA": "",
+						"range": "0-0",
+						"patternB": "",
+						"xxOptions": { "0C": true, "0D": true, "FF": true, "0120": false }
+					}
+				]
+			},
+			"arm64": {
+				"patterns": [
+					{
+						"patternA": "",
+						"range": "0-0",
+						"patternB": "",
+						"xxOptions": { "0C": true, "0D": true, "FF": true }
+					}
+				]
+			}
 		},
+
 		"apple": {
-			"x86": { "patterns": [{ "patternA": "", "range": "0-0", "patternB": "", "xxOptions": { "0C": true, "0D": true, "FF": true } }] },
-			"x64": { "patterns": [{ "patternA": "", "range": "0-0", "patternB": "", "xxOptions": { "0C": true, "0D": true, "FF": true } }] },
-			"arm32": { "patterns": [{ "patternA": "", "range": "0-0", "patternB": "", "xxOptions": { "0C": true, "0D": true, "FF": true, "0120": false } }] },
-			"arm64": { "patterns": [{ "patternA": "E? F3 01 B2", "range": "4-12", "patternB": "?F 3? XX F1", "xxOptions": { "0C": true, "0D": true, "FF": true } }] }
+			"x86": {
+				"patterns": [
+					{
+						"patternA": "",
+						"range": "0-0",
+						"patternB": "",
+						"xxOptions": { "0C": true, "0D": true, "FF": true }
+					}
+				]
+			},
+			"x64": {
+				"patterns": [
+					{
+						"patternA": "",
+						"range": "0-0",
+						"patternB": "",
+						"xxOptions": { "0C": true, "0D": true, "FF": true }
+					}
+				]
+			},
+			"arm32": {
+				"patterns": [
+					{
+						"patternA": "",
+						"range": "0-0",
+						"patternB": "",
+						"xxOptions": { "0C": true, "0D": true, "FF": true, "0120": false }
+					}
+				]
+			},
+			"arm64": {
+				"patterns": [
+					{
+						"patternA": "E? F3 01 B2",
+						"range": "4-12",
+						"patternB": "?F 3? XX F1",
+						"xxOptions": { "0C": true, "0D": true, "FF": true }
+					}
+				]
+			}
 		}
 	}
 }
