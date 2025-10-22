@@ -380,10 +380,13 @@ def build_patches_for_arch(arch: str, first_tuple, second_tuple):
 
 def write_am_config(dest_dir: Path, exe_name: str, arch: str, first_tuple, second_tuple):
 	obj = {
+		"enableAll": True,
+		"enableRAM": True,
+		"RAMWarningDisabled": True,
 		"path": exe_name,
 		"switches": [
 			{
-				"title": "Patch to EPPL Mod \n(remove piston push limit)",
+				"title": "Patch to EPPL Mod (remove piston push limit)",
 				"patches": build_patches_for_arch(arch, first_tuple, second_tuple)
 			}
 		]
