@@ -1,0 +1,8 @@
+# Here you can see hex positions to modify MCBE.
+# If you have problems then ask help here: https://github.com/Max-RM/Extend-PistonPushLimit-for-MCBE/issues
+--------------------------------------
+1.21.120.4 GDK x64 Release
+=
+0x5F73AB1 >> 0C >> FF
+0x5F74320 >> 0C >> FF
+--------------------------------------
