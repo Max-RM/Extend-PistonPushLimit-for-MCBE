@@ -56,6 +56,28 @@ to remove themida/winlicense from the game exe.
 =
 0x2A9ACDE >> 0C >> FF
 0x2A9AF70 >> 0C >> FF
+=
+Additional perfomance patch (AutoModificator v020 is requered):
+0x117390F >> E8 >> 90
+0x1173910 >> 9E >> 90
+0x1173911 >> D5 >> 90
+0x1173912 >> F6 >> 90
+0x1173913 >> FE >> 90
+0x1173AB6 >> 75 >> 90
+0x1173AB7 >> A8 >> 90
+0x1173AD3 >> E8 >> 90
+0x1173AD4 >> 29 >> 90
+0x1173AD5 >> D3 >> 90
+0x1173AD6 >> F3 >> 90
+0x1173AD7 >> FE >> 90
+0x1173AE1 >> FF >> 90
+0x1173AE2 >> 52 >> 90
+0x1173AE3 >> 04 >> 90
+0x1173B0B >> E8 >> 90
+0x1173B0C >> B3 >> 90
+0x1173B0D >> 92 >> 90
+0x1173B0E >> EF >> 90
+0x1173B0F >> FE >> 90
 --------------------------------------
 1.16.201.2 win32 x86 (1.23.1.137451)
 =
