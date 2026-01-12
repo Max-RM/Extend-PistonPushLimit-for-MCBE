@@ -1,0 +1,1 @@
+An experimental port for LeviLaunchroid, created in collaboration with https://github.com/TANGY009
