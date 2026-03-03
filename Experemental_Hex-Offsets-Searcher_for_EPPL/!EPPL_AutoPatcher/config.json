@@ -14,6 +14,12 @@
 						"xxOptions": { "0C": true, "0D": true, "FF": true }
 					},
 					{
+						"patternA": "B8 AB AA AA 2A",
+						"range": "0-28",
+						"patternB": "83 F? XX",
+						"xxOptions": { "0C": true, "0D": true, "FF": false }
+					},
+					{
 						"patternA": "69 C0 AB AA AA AA",
 						"range": "0-5",
 						"patternB": "83 F8 XX 0F",
