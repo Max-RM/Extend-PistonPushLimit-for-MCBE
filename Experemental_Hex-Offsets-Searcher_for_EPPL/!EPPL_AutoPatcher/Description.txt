@@ -35,3 +35,70 @@ B8 AB AA AA 2A
 - Любую версию (0.15.0.0 - Latest).
 - Любой архитектуры (x64, x86, ARM64, ARM32).
 - Любой платформы (Windows UWP/Win32/Win64/GDK, Android, iOS, MacOS, Linux (BDS), Консоли)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Markdown:
+
+# Piston Push Limit Pattern Research
+
+## Overview
+
+During extensive reverse-engineering research related to the EPPL (Extended Piston Push Limit) modification, a recurring pattern was identified in many game binaries.
+
+## Pattern Structure
+
+The observed structure is not a fixed signature of the Piston Push Limit itself, but rather a consistent local code layout around its implementation.
+
+It typically consists of:
+
+1. A `mov` instruction that loads a large immediate value (encoding varies by architecture and compiler output). This often appears as repeating byte patterns such as `AA AA AA ...`, but this is not related to the piston limit itself and should be treated as surrounding instruction noise or context.
+2. A short instruction gap, typically 0–30 bytes.
+3. An instruction where the **Piston Push Limit value is actually used**, encoded as an immediate operand. In many observed x86/x64 builds this corresponds to values such as `0x0C` or `0x0D`, depending on version and platform implementation.
+
+## Important clarification
+
+The `0x0C / 0x0D` bytes should be interpreted as the **actual encoded limit value within the instruction stream**, not as a separate instruction or logical operation. In most cases, they appear as part of an immediate operand inside a single instruction rather than a standalone opcode.
+
+## Example (MCBE UWP x86)
+
+```text id="8kq3mn"
+B8 AB AA AA 2A
+10 - 30 bytes
+83 F? 0C
+```
+
+## Observations
+
+Across a large number of analyzed x86 and x64 builds, the relative positioning between the `mov` immediate-load instruction and the subsequent piston-related operation has shown a notable degree of consistency, with some exceptions.
+
+For ARM32 and ARM64 builds, instruction encoding differs substantially, and the same structural pattern may not be directly applicable or may require different heuristics.
+
+The observed x86/x64 pattern has been identified across versions ranging from:
+
+* MCBE UWP 0.15.0.0 (first release containing pistons)
+* MCBE UWP 1.21.120.21
+
+## Potential Applications
+
+Based on these observations, experimental scripts were developed to locate candidate instruction regions for further analysis.
+
+Current results suggest that this heuristic can be effective on a range of supported builds. With additional refinement and validation, it may serve as a basis for a more generalized EPPL patching approach capable of:
+
+* Supporting multiple game versions
+* Supporting multiple CPU architectures
+* Handling different platform-specific builds
+
+However, full cross-version and cross-platform universality has not been formally verified and should be treated as an ongoing research direction rather than a guaranteed capability.
